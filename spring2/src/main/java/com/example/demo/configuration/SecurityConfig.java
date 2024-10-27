@@ -23,7 +23,16 @@ public class SecurityConfig {
 	}
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+		/*http
+				.authorizeHttpRequests((requests) -> requests
+						.anyRequest().permitAll()  // 모든 요청을 인증 없이 허용 (테스트용)
+				)
+				.formLogin((form) -> form
+						.loginPage("/login")
+						.permitAll()
+				)
+				.csrf(csrf -> csrf.disable());  // CSRF 비활성화 (문제 원인 확인용)*/
+		http
                 .authorizeHttpRequests((requests) -> requests
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                                 .requestMatchers("/", "/a/**", "/login", "/logout").permitAll()  // 로그인과 로그아웃 경로를 인증 없이 접근 가능하도록 설정
@@ -32,14 +41,13 @@ public class SecurityConfig {
                 .formLogin((form) -> form
                                 .loginPage("/login")
                                 .permitAll()
-                                .defaultSuccessUrl("/")
+                                .defaultSuccessUrl("/",true)
                 )
                 .logout((logout) -> logout
                                 .logoutSuccessUrl("/")
                                 .permitAll()
                 )
                 .csrf(csrf -> csrf.disable());  // CSRF 비활성화
-
 	    return http.build();
 	}
 	@Bean
